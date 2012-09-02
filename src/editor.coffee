@@ -36,7 +36,7 @@
 		effect:
 			opacity:		0.8
 	regex:
-		namepattern:		/[A-Za-z ]+/g; # Used to sanitize names
+		namepattern:		/.+/g; # Used to sanitize names
 	app:
 		name:				"LiveSC"
 		version:			"1.0"

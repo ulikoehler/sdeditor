@@ -1,7 +1,8 @@
 @LSC ?= {}
 
 class @LSC.Instance
-	constructor: (@name, @number, @env, @paper, @lsc) ->
+	constructor: (@initialName, @number, @env, @paper, @lsc) ->
+		@name = initialName
 		@selected = false
 		@head = @paper.rect(0,0,0,0)
 		@head.attr
@@ -44,6 +45,7 @@ class @LSC.Instance
 			text: @name
 			x: x
 			y: y + cfg.instance.head.height / 2
+			"line-height": "16px"
 		lh = height - cfg.instance.foot.height - cfg.instance.head.height
 		@line.update
 			path: "M #{x},#{y + cfg.instance.head.height} v #{lh}"
@@ -60,7 +62,7 @@ class @LSC.Instance
 	drop: (event) => 				#End drag
 	edit: (event) =>				#Edit name
 		unless @editor?
-			@editor = $("<input type='text'/>")
+			@editor = $("<textarea />").autosize()
 			@editor.css
 				left:			@lsc.numberX(@number) - cfg.instance.head.width / 2 + cfg.margin / 2
 				top:			@y + cfg.margin / 2
@@ -73,8 +75,9 @@ class @LSC.Instance
 				text: ""
 				opacity: 0
 			@editor.mousedown (e) -> e.stopPropagation()
-			@editor.val(@name).focus().select().blur(@unedit).keypress (event) =>
-				@unedit() if event.keyCode == 13
+			@editor.val(@name).focus().select().blur(@unedit)
+			#Old code to exit editor if return pressed
+			#.keypress (event) => @unedit() if event.keyCode == 13 and !event.ctrlKey
 	unedit: (event) =>				# End name edit
 		if @editor?
 			return if @editor.val() == ""
@@ -82,7 +85,8 @@ class @LSC.Instance
 			return if !cfg.regex.namepattern.test(@editor.val())
 			
 			# Sanity cleanup with regex
-			val = @editor.val().trim().match(cfg.regex.namepattern).join('')
+			val = @editor.val().trim()
+			#val = val.replace(/\n/g, " xnl ")
 			
 			# Check if the name conflicts with another instance
 			inst = @lsc.getInstanceByName(val)
@@ -98,13 +102,8 @@ class @LSC.Instance
 			@editor.remove()
 			@editor = null
 			@lsc.change()
-
-			# Ensure that instance conforms to the already specified player
-			player = @lsc.getInstanceByNameInAllCharts(val)
-			if player?
-				@env = player.env
-				@lsc.update()
-			
+			#Re-render
+			@lsc.update()
 	hoverIn: =>
 		unless @selected
 			@head.update
