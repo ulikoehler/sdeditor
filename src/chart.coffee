@@ -6,7 +6,6 @@ class @LSC.Chart
 	constructor: (@paper, @x = 0, @y = cfg.toolbar.height) ->
 		@name = "Untitled"
 		@disabled = false		# If set to 'true', the mainchart is FALSE
-		@drawLines = true           # If set to false, no lines are drawn around the chart
 		@messages = []
 		@instances = []
 		@lineloc = 1			#Location between pre- and postchart
@@ -69,40 +68,8 @@ class @LSC.Chart
 		LSC.instant() if instant
 		width = Math.max(cfg.instance.width * @instances.length, cfg.chart.minwidth)
 		preheight = cfg.instance.head.height + cfg.margin + cfg.location.height * @lineloc
-		# redraw prechart
-		if @drawLines
-			@prechart.update
-				path: """M #{@x + cfg.margin + cfg.prechart.padding} #{@y + cfg.margin}
-					 h #{width}
-			 		 l #{cfg.prechart.padding} #{preheight/2}
-					 l -#{cfg.prechart.padding} #{preheight/2}
-					 h -#{width}
-					 l -#{cfg.prechart.padding} -#{preheight/2} z"""
 		postheight = 2*cfg.margin + cfg.location.height * (@resloc - @lineloc)
-		# redraw body
-		if @drawLines
-			@postchart.update
-				path: """M #{@x + cfg.margin + cfg.prechart.padding},#{@y + cfg.margin + preheight}
-					h #{width} v #{postheight} h -#{width} z"""
-					 
-		# if chart is FALSE, draw a cross over the mainchart
-		if @disabled and @drawLines
-			@postchart.update
-				path: """M #{@x + cfg.margin + cfg.prechart.padding},#{@y + cfg.margin + preheight}
-						h #{width} v #{postheight} h -#{width} z
-						M #{@x + cfg.margin + cfg.prechart.padding},#{@y + cfg.margin + preheight}
-						L #{@x + cfg.margin + cfg.prechart.padding + width},#{@y + cfg.margin + preheight + postheight}
-						M #{@x + cfg.margin + cfg.prechart.padding + width},#{@y + cfg.margin + preheight}
-						L #{-@x + cfg.margin + cfg.prechart.padding}, #{@y + cfg.margin + preheight + postheight}
-						 """
 		restrictheight = cfg.location.height * (@locations - @resloc) - cfg.location.height;
-
-		# restricts chart
-		if @drawLines
-			@restrictchart.update
-				path: """M #{@x + cfg.margin + cfg.prechart.padding},#{@y + cfg.margin + preheight + postheight}
-					h #{width} v #{restrictheight} h -#{width} z"""
-
 		# redraw instances
 		for instance in @instances
 			yi = @y + 2 * cfg.margin			# Why is there an y here???

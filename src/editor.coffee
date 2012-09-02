@@ -200,18 +200,6 @@ instant = false
 					"""
 		action:		 exportSVG
 	@LSC.Separator()
-			
-	@LSC.Button
-		icon:		"diagram"
-		tooltip:		"Remove additional stuff from diagram"
-		help:		"""
-					Load example from our very neat <b>example gallery</b>. Each example comes with a
-					small description, providing a hint about why it might be interesting.
-					Note that some of the examples are so large that we cannot be handled at this point.
-					"""
-		action:		 -> CurrentChart?.toggleDrawLines()
-
-	@LSC.Separator()
 	
 	@LSC.Button
 		icon:		"githubalt"
@@ -384,41 +372,6 @@ dropFile = (event) =>
 		else
 			switchChart(0)
 	reader.readAsText(file)
-
-# Downloads the SMV code for the specification
-getSMV = =>
-	if @CurrentChart?
-		@Charts[@CurrentIndex] = @CurrentChart.toJSON()
-	try
-		data = @LSC.toSMV($.secureEvalJSON($.toJSON(@Charts)),false)
-	catch error
-		alert "An error occurred during translation.\nPlease provide at least one message."
-		return
-	dataurl = "data:text/plain;base64,#{$.base64Encode(data)}"
-	informDownload()
-	window.open(dataurl, "_blank")
-
-# Checks realizability
-check = =>
-	if @CurrentChart?
-		@Charts[@CurrentIndex] = @CurrentChart.toJSON()
-	try
-		smv = LSC.toSMV($.secureEvalJSON($.toJSON(@Charts)))
-	catch error
-		alert "An error occurred during translation.\nPlease provide at least one message."
-		return
-	LSC.Applet.check(smv)
-
-# Synthesizes a controller
-synthesize = =>
-	if @CurrentChart?
-		@Charts[@CurrentIndex] = @CurrentChart.toJSON()
-	try
-		smv = LSC.toSMV($.secureEvalJSON($.toJSON(@Charts)))
-	catch error
-		alert "An error occurred during translation.\nPlease provide at least one message."
-		return
-	LSC.Applet.synthesize(smv)
 
 # Export current chart to SVG file
 exportSVG = =>
