@@ -86,8 +86,7 @@ instant = false
 	$(window).resize()
 
 	#### Set default document title
-	setDocTitle("Untitled")
-	$("#welcometitle").html("Welcome to #{cfg.app.name} #{cfg.app.version}")
+	setDocTitle("Untitled"))
 	
 	#### Create workspace paper
 	@paper = @Raphael("workspace", cfg.chart.minwidth, "400")
@@ -236,8 +235,6 @@ instant = false
 	# Add new empty chart
 	addChart()
 
-	# Hide welcome dialog on click
-	$("#welcomedialog").click -> $("#welcomedialog").fadeOut cfg.animation.speed
 	$("#helpdialog").click -> $("#helpdialog").fadeOut cfg.animation.speed
 	$("#examplehint").click examples
 	$("#helphint").click -> $("#helpdialog").fadeIn cfg.animation.speed
