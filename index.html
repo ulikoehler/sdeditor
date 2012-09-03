@@ -14,6 +14,7 @@ When we feel like it:
 -->
 	<link rel="stylesheet" type="text/css" href="css/style.css"/>
 	<link rel="stylesheet" type="text/css" href="css/jquery.contextMenu.css"/>
+	<link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.8.23.custom.css"/>
 	<script type="text/javascript" src="lib/raphael.js"/></script>
 	<script type="text/javascript" src="lib/raphael-icons.js"/></script>
 	<script type="text/javascript" src="lib/raphael.export.js"/></script>
@@ -22,6 +23,7 @@ When we feel like it:
 	<script type="text/javascript" src="lib/jquery.json.min.js"/></script>
 	<script type="text/javascript" src="lib/jquery.base64.js"/></script>
 	<script type="text/javascript" src="lib/jquery.contextMenu.js"/></script>
+	<script type="text/javascript" src="lib/jquery-ui-1.8.23.custom.min.js"/></script>
 	<script type="text/javascript" src="lib/util.js"/></script>
 	<script type="text/javascript" src="bin/icons.js"></script>
 	<script type="text/javascript" src="bin/examples.js"></script>
@@ -103,9 +105,25 @@ When we feel like it:
 		</div>
 	</div>
 	<ul id="messageMenu" class="contextMenu">
-	    <li><a name="edit" width="64" href="#edit">Edit</a></li>
+	    <li><a name="edit" width="64" href="#edit">Edit label</a></li>
 	    <li><a name="delete" width="64" href="#delete">Delete</a></li>
-	    	</ul>
-
+	</ul>
+	<ul id="instanceMenu" class="contextMenu">
+	    <li><a name="edit" width="64" href="#edit">Edit label</a></li>
+	    <li><a name="delete" width="64" href="#delete">Delete</a></li>
+	</ul>
+	<div id="editInstanceStyleDialog" title="Edit instance style">
+		<form>
+		<fieldset>
+		<label for="outlinePattern">Outline pattern:</label>
+		<select name="outlinePattern" size="4">
+		      <option>Continous</option>
+		      <option>--</option>
+		      <option>-</option>
+		      <option>.</option>
+		</select>
+		</fieldset>
+		</form>
+	</div>
 </body>
 </html>

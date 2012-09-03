@@ -99,6 +99,9 @@ class @LSC.Message
 			curText.drag(@move, @drag, @drop)
 			curText.mousedown(@select)
 			curText.dblclick(@edit)
+			#For self loops, left-align the label
+			if selfLoop
+				curText.attr({'text-anchor': 'start'});
 			@text.push(curText)
 		
 		@rect.update
@@ -158,4 +161,5 @@ class @LSC.Message
 		@clearText()
 		@rect.remove()
 		@arrow.remove()
+		@lsc.update()
 

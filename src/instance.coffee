@@ -21,6 +21,14 @@ class @LSC.Instance
 		@foot.attr
 			"fill":	"black"
 		@width = cfg.instance.width
+		@strokeDasharray = ""
+		# Add context menu to raphael
+		$(@head.node).contextMenu({menu: "instanceMenu"}, @contextMenuHandler)
+	contextMenuHandler: (action, el, pos) =>
+		if action == "edit"
+			@edit()
+		else if action == "delete"
+			@remove()
 	clearText: () =>
 		#Clear all previous texts
 		for text in @text
@@ -29,13 +37,9 @@ class @LSC.Instance
 		x = @lsc.numberX(@number)
 		pad = cfg.instance.padding
 
-		# draw as env or system object
-		if @env
-			@head.attr
-				"stroke-dasharray":"--"
-		else
-			@head.attr
-				"stroke-dasharray":""
+		# set the outline pattern
+		@head.attr
+			"stroke-dasharray": @strokeDasharray
 		
 		@head.update
 			x: 			x - cfg.instance.head.width / 2
@@ -141,3 +145,4 @@ class @LSC.Instance
 		@line.remove()
 		@foot.remove()
 		@clearText()
+		@lsc.update()

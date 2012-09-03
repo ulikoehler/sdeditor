@@ -170,7 +170,7 @@ class @LSC.Chart
 		m.edit()		if edit
 		return m
 	createInstance: (env) =>
-		i = new LSC.Instance("untitled#{NextInstNr++}", @instances.length, env, @paper, @)
+		i = new LSC.Instance("untitled#{NextInstNr++}", @instances.length, @paper, @)
 		@instances.push(i)
 		@update()
 		i.edit()
