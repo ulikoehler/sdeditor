@@ -106,7 +106,7 @@ class @LSC.Chart
 		instance.number = number
 		@update()
 	addMessage: =>
-		if @instances.length > 1
+		if @instances.length >= 1
 			@isAddingMessage = true
 			$("#workspace").css("cursor", "crosshair")
 			@addingM = null
@@ -157,8 +157,13 @@ class @LSC.Chart
 			@addingM.edit()
 			@addingM = null
 	createMessage: (sourceNumber, targetNumber, location, name, edit = true) =>
-		target = i for i in @instances when i.number == targetNumber
-		source = i for i in @instances when i.number == sourceNumber
+		#If there is only one instance
+		if @instances.length == 1
+			source = @instances[0]
+			target = @instances[0]
+		else
+			source = i for i in @instances when i.number == sourceNumber
+			target = i for i in @instances when i.number == targetNumber
 		m = new LSC.Message(name, source, target, location, @)
 		msg.location += 1 for msg in @messages when msg.location >= location
 		@lineloc += 1 if @lineloc >= location
@@ -169,7 +174,7 @@ class @LSC.Chart
 		@update()
 		m.edit()		if edit
 		return m
-	createInstance: (env) =>
+	createInstance: () =>
 		i = new LSC.Instance("untitled#{NextInstNr++}", @instances.length, @paper, @)
 		@instances.push(i)
 		@update()
@@ -254,26 +259,6 @@ class @LSC.Chart
 		for chart in Charts when chart.name != @name
 			for inst in chart.instances when inst.name == instanceName
 				return inst
-	# changes the type of selected instance
-	changeInstanceType: =>
-		selectedInstance = null
-		for inst in @instances when inst.selected
-			inst.env = !inst.env
-			selectedInstance = inst
-
-		# should not happen!
-		if !selectedInstance?
-			log "No instance was selected! Something went wrong."
-
-		# change instance type in all charts in system
-		updatedCharts = []
-		for chart in Charts when chart.name != @name
-			for inst in chart.instances when inst.name == selectedInstance.name
-				inst.env = selectedInstance.env
-				updatedCharts.push(chart.name)
-		if updatedCharts.length > 0
-			alert "'#{selectedInstance.name}' was also updated in:\n #{updatedCharts.join('\n ')}"
-		@update()
 	# toggle enabledness of the chart
 	toggleEnabledness: =>
 		@disabled = !@disabled
@@ -311,7 +296,7 @@ class @LSC.Chart
 		@resloc = json.resloc
 		@locations = json.locations
 		for inst in json.instances
-			@instances.push new LSC.Instance(inst.name, inst.number, inst.env, @paper, @)
+			@instances.push new LSC.Instance(inst.name, inst.number, @paper, @)
 		for msg in json.messages
 			for i in @instances
 				source = i		if i.name == msg.source

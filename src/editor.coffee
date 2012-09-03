@@ -86,7 +86,7 @@ instant = false
 	$(window).resize()
 
 	#### Set default document title
-	setDocTitle("Untitled"))
+	setDocTitle("Untitled")
 	
 	#### Create workspace paper
 	@paper = @Raphael("workspace", cfg.chart.minwidth, "400")
