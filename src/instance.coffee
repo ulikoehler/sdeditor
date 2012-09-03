@@ -4,7 +4,7 @@ class @LSC.Instance
 	constructor: (@initialName, @number, @env, @paper, @lsc) ->
 		@name = initialName
 		@selected = false
-		@head = @paper.rect(0,0,0,0)
+		@head = @paper.rect(0,0,0,0,5)
 		@head.attr
 			cursor:			"pointer"
 			fill: 			"#999"
@@ -22,6 +22,10 @@ class @LSC.Instance
 		@foot.attr
 			"fill":	"black"
 		@width = cfg.instance.width
+	clearText: () =>
+		#Clear all previous texts
+		for text in @tex
+			text.remove()
 	update: (@y, height) =>
 		x = @lsc.numberX(@number)
 		pad = cfg.instance.padding
@@ -33,7 +37,7 @@ class @LSC.Instance
 		else
 			@head.attr
 				"stroke-dasharray":""
-
+		
 		@head.update
 			x: 			x - cfg.instance.head.width / 2
 			y: 			y
@@ -68,6 +72,9 @@ class @LSC.Instance
 		if dst != @number
 			@lsc.moveInstance(@, dst)
 	drop: (event) => 				#End drag
+		# Clear old text and rerender
+		@clearText()
+		@lsc.update()
 	edit: (event) =>				#Edit name
 		unless @editor?
 			@editor = $("<textarea />").autosize()
@@ -78,14 +85,9 @@ class @LSC.Instance
 				height:			cfg.instance.head.height - cfg.margin
 			@editor.addClass("editor centered")
 			@editor.appendTo("#workspace")
-
-			#Clear all previous texts
-			for text in @text
-				do (text) ->
-					text.attr
-						text: ""
-						opacity: 0
-					text.remove()
+			
+			@clearText()
+			
 			@editor.mousedown (e) -> e.stopPropagation()
 			@editor.val(@name).focus().select().blur(@unedit)
 			#Old code to exit editor if return pressed
@@ -93,7 +95,6 @@ class @LSC.Instance
 	unedit: (event) =>				# End name edit
 		if @editor?
 			return if @editor.val() == ""
-			
 			return if !cfg.regex.namepattern.test(@editor.val())
 			
 			#Trim the text
@@ -138,4 +139,4 @@ class @LSC.Instance
 		@head.remove()
 		@line.remove()
 		@foot.remove()
-		@text.remove()
+		@clearText()

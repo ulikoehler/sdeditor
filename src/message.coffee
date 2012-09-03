@@ -21,6 +21,10 @@ class @LSC.Message
 		@rect.drag(@move, @drag, @drop)
 		@rect.mousedown(@select)
 		@arrow.mousedown(@select)
+	clearText: () =>
+		#Clear all previous texts
+		for text in @tex
+			text.remove()
 	hoverIn: =>
 		unless @selected
 			@rect.update
@@ -61,6 +65,10 @@ class @LSC.Message
 		
 		@arrow.update
 				path: p
+				
+		#Hide previous texts
+		@clearText()
+		#
 		# Render the text lines
 		#
 		lines = @name.match(/^.*([\n\r]+|$)/gm);
@@ -108,12 +116,7 @@ class @LSC.Message
 			@editor.addClass("editor centered")
 			@editor.appendTo("#workspace")
 			#Clear all previous texts
-			for text in @text
-				do (text) ->
-					text.attr
-						text: ""
-						opacity: 0
-					text.remove()
+			@clearText()
 			
 			@editor.mousedown (e) -> e.stopPropagation()
 			@editor.val(@name).focus().select().blur(@unedit)
@@ -127,6 +130,8 @@ class @LSC.Message
 			
 			#Trim the text
 			val = @editor.val().trim()
+			#Hide previous texts
+			@clearText()
 			
 			@name = val
 			
@@ -136,7 +141,7 @@ class @LSC.Message
 			@lsc.update()
 	toJSON: => name: @name, location: @location, source: @source.name, target: @target.name
 	remove: =>
-		@text.remove()
+		@clearText()
 		@rect.remove()
 		@arrow.remove()
 
