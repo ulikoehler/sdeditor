@@ -9,6 +9,7 @@
 			width:			150
 			height:			40
 		padding:			25				# Padding between two instance lines
+		selfLoopHeight:         20
 		foot:
 			height:			3
 			width:			100
@@ -22,7 +23,7 @@
 	sidebar:
 		width:				250
 	animation:
-		speed:				300
+		speed:				100
 	prechart:
 		padding:			50
 	toolbar:

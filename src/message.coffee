@@ -48,18 +48,21 @@ class @LSC.Message
 		y = @lsc.locationY(@location)
 		xs = @lsc.numberX(@source.number)
 		xt = @lsc.numberX(@target.number)
-		ar_w = cfg.arrow.width
-		ar_h = cfg.arrow.height
+		arrowWidth = cfg.arrow.width
+		arrowHeight = cfg.arrow.height
 		width = Math.abs(xs - xt)
+		#Calculate the coordinates of the path
+		selfLoop = false
 		if xs < xt
-			p = "M #{xs},#{y} h #{xt - xs - ar_w} l 0,#{ar_h} #{ar_w},-#{ar_h} -#{ar_w},-#{ar_h} 0,#{ar_h}"
+			p = "M #{xs},#{y} h #{xt - xs - arrowWidth} l 0,#{arrowHeight} #{arrowWidth},-#{arrowHeight} -#{arrowWidth},-#{arrowHeight} 0,#{arrowHeight}"
 			tx = xs + cfg.instance.width / 2
 		else if xs == xt # self-looping message
-			p = "M #{xs},#{y} h #{cfg.instance.padding} v #{5} h #{-cfg.instance.padding+ar_w} l 0,#{ar_h} -#{ar_w},-#{ar_h} #{ar_w},-#{ar_h} 0,#{ar_h}"
+			selfLoop = true
+			p = "M #{xs},#{y} h #{cfg.instance.padding} v #{cfg.instance.selfLoopHeight} h #{-cfg.instance.padding+arrowWidth} l 0,#{arrowHeight} -#{arrowWidth},-#{arrowHeight} #{arrowWidth},-#{arrowHeight} 0,#{arrowHeight}"
 			tx = xs + 2*cfg.margin
 			width = cfg.instance.padding
 		else
-			p = "M #{xs},#{y} h -#{xs - xt - ar_w} l 0,#{ar_h} -#{ar_w},-#{ar_h} #{ar_w},-#{ar_h} 0,#{ar_h}"
+			p = "M #{xs},#{y} h -#{xs - xt - arrowWidth} l 0,#{arrowHeight} -#{arrowWidth},-#{arrowHeight} #{arrowWidth},-#{arrowHeight} 0,#{arrowHeight}"
 			tx = xs - cfg.instance.width / 2
 			
 		
@@ -76,6 +79,12 @@ class @LSC.Message
 		lineHeight = 18
 		textAreaHeight = lineHeight * lines.length
 		yOffset = y - 10
+		#Leave more space for self loops
+		#Render self loop texts on the right side
+		if selfLoop
+			lineHeight -= 4
+			tx += 22
+			yOffset = y + cfg.instance.selfLoopHeight / 2 - 1
 		for i in [0..lines.length-1]
 			curY = yOffset + i * lineHeight
 			curText = @lsc.paper.text(tx, curY, lines[i])
@@ -126,10 +135,6 @@ class @LSC.Message
 			# keypress (event) => @unedit() if event.keyCode == 13
 	unedit: (event) =>				#End edit
 		if @editor?
-			return if @editor.val() == ""
-			
-			return if !cfg.regex.namepattern.test(@editor.val())
-			
 			#Trim the text
 			val = @editor.val().trim()
 			#Hide previous texts

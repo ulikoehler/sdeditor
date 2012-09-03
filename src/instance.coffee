@@ -98,9 +98,6 @@ class @LSC.Instance
 			#.keypress (event) => @unedit() if event.keyCode == 13 and !event.ctrlKey
 	unedit: (event) =>				# End name edit
 		if @editor?
-			return if @editor.val() == ""
-			return if !cfg.regex.namepattern.test(@editor.val())
-			
 			#Trim the text
 			val = @editor.val().trim()
 			#val = val.replace(/\n/g, " xnl ")
