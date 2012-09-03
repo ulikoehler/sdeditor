@@ -86,6 +86,7 @@ class @LSC.Message
 		lineHeight = 18
 		textAreaHeight = lineHeight * lines.length
 		yOffset = y - 10
+		maxBBWidth = 0 # For self loops, find the text with the max width
 		#Leave more space for self loops
 		#Render self loop texts left-aligned and with less line height
 		if selfLoop
@@ -103,13 +104,19 @@ class @LSC.Message
 			#For self loops, left-align the label
 			if selfLoop
 				curText.attr({'text-anchor': 'start'});
+				#Find the text with the max bounding box width
+				maxBBWidth = Math.max(curText.getBBox().width, maxBBWidth)
 			@text.push(curText)
+			
+		#Update the rectangle
+		#With the sdeditor changes, the LiveSC algorithm above needs some changes
+		#to display the bounding rectangle correctly
 		
 		@rect.update
 			x: Math.min(xs, xt) - cfg.margin
-			y: y - (cfg.location.height - cfg.margin) / 2 - 10 / 2
-			width: width + 2 * cfg.margin
-			height: cfg.location.height - cfg.margin
+			y: y - (cfg.location.height - cfg.margin) / 2 + cfg.margin/2
+			width: width + 3 * cfg.margin + maxBBWidth
+			height: cfg.instance.selfLoopHeight + 2*cfg.margin
 	drag: (x, y, event) => 			#Start drag
 	move: (dx, dy, x, y, event) => 	#Move (during drag)
 		dst = @lsc.GetLocation(LSC.pageY2RaphaelY(y))
