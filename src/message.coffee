@@ -66,7 +66,7 @@ class @LSC.Message
 		else if xs == xt # self-looping message
 			selfLoop = true
 			p = "M #{xs},#{y} h #{cfg.instance.padding} v #{cfg.instance.selfLoopHeight} h #{-cfg.instance.padding+arrowWidth} l 0,#{arrowHeight} -#{arrowWidth},-#{arrowHeight} #{arrowWidth},-#{arrowHeight} 0,#{arrowHeight}"
-			tx = xs + 2*cfg.margin
+			tx = xs
 			width = cfg.instance.padding
 		else
 			p = "M #{xs},#{y} h -#{xs - xt - arrowWidth} l 0,#{arrowHeight} -#{arrowWidth},-#{arrowHeight} #{arrowWidth},-#{arrowHeight} 0,#{arrowHeight}"
@@ -87,11 +87,12 @@ class @LSC.Message
 		textAreaHeight = lineHeight * lines.length
 		yOffset = y - 10
 		#Leave more space for self loops
-		#Render self loop texts on the right side
+		#Render self loop texts left-aligned and with less line height
 		if selfLoop
-			lineHeight -= 4
-			tx += 22
-			yOffset = y + cfg.instance.selfLoopHeight / 2 - 1
+			lineHeight -= 6
+			textAreaHeight = lineHeight * lines.length
+			tx += 30
+			yOffset = y + cfg.instance.selfLoopHeight/2 - textAreaHeight / 2 + 5
 		for i in [0..lines.length-1]
 			curY = yOffset + i * lineHeight
 			curText = @lsc.paper.text(tx, curY, lines[i])

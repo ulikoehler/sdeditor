@@ -1,7 +1,7 @@
 @LSC ?= {}
 
 class @LSC.Instance
-	constructor: (@initialName, @number, @env, @paper, @lsc) ->
+	constructor: (@initialName, @number, @paper, @lsc) ->
 		@name = initialName
 		@selected = false
 		@head = @paper.rect(0,0,0,0,5)
