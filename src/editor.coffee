@@ -124,7 +124,7 @@ instant = false
 
 	#### Initialize Sidebar
 	@sidebar = new @LSC.Sidebar($("#chartlist"))
-
+	
 	#### Initialize toolbar
 	@LSC.Toolbar.initialize()
 
@@ -137,7 +137,7 @@ instant = false
 					must be satisfied by any realization. Typically charts are used to express independent
 					senarios or counter-examples.
 					"""
-		action:		 -> addChart()
+		action:		 -> unfocus(); addChart()
 
 	@LSC.Button
 		icon:		"plus"
@@ -148,7 +148,7 @@ instant = false
 					a given chart. The type of a given instance must also be the same in the other
 					charts.
 					"""
-		action:		 -> CurrentChart?.createInstance(false)
+		action:		 -> unfocus(); CurrentChart?.createInstance(false)
 
 	@LSC.Button
 		icon:		"SwitchType"
@@ -158,7 +158,7 @@ instant = false
 					and vice versus.
 					Notice that the type of instances with same name in other charts will also change.
 					"""
-		action:		 -> CurrentChart?.changeInstanceType()
+		action:		 -> unfocus(); CurrentChart?.changeInstanceType()
 
 	@LSC.Button
 		icon:		"exchange"
@@ -169,7 +169,7 @@ instant = false
 					Messages in the forbidden section will abort the prefix and are not allowed to occur
 					in any execution of the main chart.
 					"""
-		action:		 -> CurrentChart?.addMessage()
+		action:		 -> unfocus(); CurrentChart?.addMessage()
 	@LSC.Button
 		icon:		"trash"
 		tooltip:	"Delete selection"
@@ -177,7 +177,7 @@ instant = false
 					<b>Deletes</b> the current selected message or instance.
 					Note that if you delete an instance the associated messages will also be removed.
 					"""
-		action:		 -> CurrentChart?.deleteSelection()
+		action:		 -> unfocus(); CurrentChart?.deleteSelection()
 
 	@LSC.Separator()
 
@@ -220,7 +220,7 @@ instant = false
 					LiveSC is opened. Just click anywhere to make them go away.
 					But not yet, please finish reading this list first, the best is saved for last.
 					"""
-		action:		 -> $("#helpdialog").fadeIn cfg.animation.speed
+		action:		 -> $("#helpdialog").fadeIn(cfg.animation.speed)
 	
 	@LSC.Button
 		icon:		"star3"

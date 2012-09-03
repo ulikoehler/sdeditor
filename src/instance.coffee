@@ -11,7 +11,6 @@ class @LSC.Instance
 			"fill-opacity": 0
 		@head.drag(@move, @drag, @drop)
 		@head.hover(@hoverIn, @hoverOut)
-		@text = 
 		@head.dblclick(@edit)
 		@head.mousedown(@select)
 		@text = []
@@ -24,7 +23,7 @@ class @LSC.Instance
 		@width = cfg.instance.width
 	clearText: () =>
 		#Clear all previous texts
-		for text in @tex
+		for text in @text
 			text.remove()
 	update: (@y, height) =>
 		x = @lsc.numberX(@number)
@@ -43,6 +42,8 @@ class @LSC.Instance
 			y: 			y
 			width: 		cfg.instance.head.width
 			height: 	cfg.instance.head.height
+		#Remove all previous texts
+		@clearText()
 		#
 		# Render the text lines
 		#
@@ -66,14 +67,17 @@ class @LSC.Instance
 			y: 	y + cfg.instance.head.height + lh
 			width: 		cfg.instance.foot.width
 			height: 	cfg.instance.foot.height
-	drag: (x, y, event) => 			#Start drag
-	move: (dx, dy, x, y, event) => 	#Move (during drag)
+	drag: (x, y, event) => #Start drag
+		@clearText()
+		#Remove the editor, if any
+		if @editor
+			@unedit()
+	move: (dx, dy, x, y, event) => #Move (during drag)
 		dst = @lsc.xNumber(LSC.pageX2RaphaelX(x))
 		if dst != @number
 			@lsc.moveInstance(@, dst)
 	drop: (event) => 				#End drag
 		# Clear old text and rerender
-		@clearText()
 		@lsc.update()
 	edit: (event) =>				#Edit name
 		unless @editor?

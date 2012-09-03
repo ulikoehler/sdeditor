@@ -23,7 +23,7 @@ class @LSC.Message
 		@arrow.mousedown(@select)
 	clearText: () =>
 		#Clear all previous texts
-		for text in @tex
+		for text in @text
 			text.remove()
 	hoverIn: =>
 		unless @selected
@@ -96,7 +96,9 @@ class @LSC.Message
 		if dst != @location
 			@lsc.moveMessage(@, dst)
 	drop: (event) => 				#End drag
-	edit: (event) =>				#Edit name
+		@clearText()
+		@lsc.update()
+	edit: (event) => #Edit name
 		unless @editor?
 			xs = @lsc.numberX(@source.number)
 			xt = @lsc.numberX(@target.number)
