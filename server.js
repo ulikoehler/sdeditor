@@ -2,10 +2,10 @@ var express = require('express');
 var fs = require("fs");
 format = require('util').format;
 
-var app = express.createServer();
+var app = express();
 
 //Read pages to RAM
-indexPage = fs.readFileSync("pages/index.html")
+indexPage = fs.readFileSync("pages/index.html").toString();
 
 //Save the data JSON by filename
 filenameByName = {}
@@ -20,7 +20,7 @@ function hasData(name) {
 app.configure(function () {
     //app.use(require('stylus').middleware({ src: __dirname + '/public' }));
     app.use("/bin", express.static(__dirname + '/bin'));
-    app.use("/lib", express.static(__dirname + '/js'));
+    app.use("/lib", express.static(__dirname + '/lib'));
     app.use("/css", express.static(__dirname + '/css'));
     app.use("/images", express.static(__dirname + '/images'));
     app.use(express.bodyParser());
@@ -71,5 +71,5 @@ app.post('/upload', function(req, res, next){
 // Only listen on $ node app.js
 if (!module.parent) {
     app.listen(9451);
-    console.log("Express server listening on port %d", app.address().port);
+    console.log("Express server listening on port %d", 9451);
 }

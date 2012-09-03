@@ -1,7 +1,7 @@
 {
   "name"           : "SDEditor",
   "dependencies"   : {
-		       "express" : "2.x.x"
+		       "express" : "3.x.x"
                      },
   "main"           : "./server.js",
   "version"        : "0.0.1"
