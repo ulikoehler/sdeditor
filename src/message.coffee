@@ -21,6 +21,13 @@ class @LSC.Message
 		@rect.drag(@move, @drag, @drop)
 		@rect.mousedown(@select)
 		@arrow.mousedown(@select)
+		# Add context menu to raphael
+		$(@rect.node).contextMenu({menu: "messageMenu"}, @contextMenuHandler)
+	contextMenuHandler: (action, el, pos) =>
+		if action == "edit"
+			@edit()
+		else if action == "delete"
+			@remove()
 	clearText: () =>
 		#Clear all previous texts
 		for text in @text
