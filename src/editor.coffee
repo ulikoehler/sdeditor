@@ -151,16 +151,6 @@ instant = false
 		action:		 -> unfocus(); CurrentChart?.createInstance(false)
 
 	@LSC.Button
-		icon:		"SwitchType"
-		tooltip:	"Toggle instance type (sys/env)"
-		help:		"""
-					Toggle instance type, ie. convert <b><i>system</i> instance to <i>environment</i> instances</b>
-					and vice versus.
-					Notice that the type of instances with same name in other charts will also change.
-					"""
-		action:		 -> unfocus(); CurrentChart?.changeInstanceType()
-
-	@LSC.Button
 		icon:		"exchange"
 		tooltip:	"Add message"
 		help:		"""
