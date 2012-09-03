@@ -14,17 +14,13 @@ class @LSC.Message
 			"stroke-width": 	2
 			stroke: 			"black"
 			cursor: 			"pointer"
-		@text = @lsc.paper.text(0, 0, @name)
 		@arrow.hover(@hoverIn, @hoverOut)
-		@text.hover(@hoverIn, @hoverOut)
+		@text = []
 		@rect.hover(@hoverIn, @hoverOut)
 		@arrow.drag(@move, @drag, @drop)
 		@rect.drag(@move, @drag, @drop)
-		@text.drag(@move, @drag, @drop)
-		@text.mousedown(@select)
 		@rect.mousedown(@select)
 		@arrow.mousedown(@select)
-		@text.dblclick(@edit)
 	hoverIn: =>
 		unless @selected
 			@rect.update
@@ -61,12 +57,26 @@ class @LSC.Message
 		else
 			p = "M #{xs},#{y} h -#{xs - xt - ar_w} l 0,#{ar_h} -#{ar_w},-#{ar_h} #{ar_w},-#{ar_h} 0,#{ar_h}"
 			tx = xs - cfg.instance.width / 2
+			
+		
 		@arrow.update
 				path: p
-		@text.update
-				text: @name
-				x: tx
-				y: y - cfg.margin
+		# Render the text lines
+		#
+		lines = @name.match(/^.*([\n\r]+|$)/gm);
+		# Calculate the height per line
+		lineHeight = 18
+		textAreaHeight = lineHeight * lines.length
+		yOffset = y - 10
+		for i in [0..lines.length-1]
+			curY = yOffset + i * lineHeight
+			curText = @lsc.paper.text(tx, curY, lines[i])
+			curText.hover(@hoverIn, @hoverOut)
+			curText.drag(@move, @drag, @drop)
+			curText.mousedown(@select)
+			curText.dblclick(@edit)
+			@text.push(curText)
+		
 		@rect.update
 			x: Math.min(xs, xt) - cfg.margin
 			y: y - (cfg.location.height - cfg.margin) / 2 - 10 / 2
@@ -89,7 +99,7 @@ class @LSC.Message
 				x = xs - cfg.instance.width/2 + 3*cfg.margin
 			if xs > xt
 				x = xs - cfg.instance.width + cfg.arrow.width
-			@editor = $("<input type='text' width='" + (cfg.instance.padding - 10) + "'/>")
+			@editor = $("<textarea />").autosize()
 			@editor.css
 				left:			x
 				top:			@lsc.locationY(@location) - cfg.margin - 10
@@ -97,27 +107,33 @@ class @LSC.Message
 				height:			12
 			@editor.addClass("editor centered")
 			@editor.appendTo("#workspace")
-			@text.attr
-				text: ""
-				opacity: 0
+			#Clear all previous texts
+			for text in @text
+				do (text) ->
+					text.attr
+						text: ""
+						opacity: 0
+					text.remove()
+			
 			@editor.mousedown (e) -> e.stopPropagation()
-			@editor.val(@name).focus().select().blur(@unedit).keypress (event) =>
-				@unedit() if event.keyCode == 13
+			@editor.val(@name).focus().select().blur(@unedit)
+			# Old code to stop editing on enter
+			# keypress (event) => @unedit() if event.keyCode == 13
 	unedit: (event) =>				#End edit
 		if @editor?
 			return if @editor.val() == ""
 			
 			return if !cfg.regex.namepattern.test(@editor.val())
 			
-			# Sanity cleanup with regex
-			val = @editor.val().trim().match(cfg.regex.namepattern).join('')
+			#Trim the text
+			val = @editor.val().trim()
 			
 			@name = val
-			@text.attr
-				text: @name
-				opacity: 1
+			
 			@editor.remove()
 			@editor = null
+			#Re-render
+			@lsc.update()
 	toJSON: => name: @name, location: @location, source: @source.name, target: @target.name
 	remove: =>
 		@text.remove()

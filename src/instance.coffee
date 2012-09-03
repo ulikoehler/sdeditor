@@ -11,11 +11,10 @@ class @LSC.Instance
 			"fill-opacity": 0
 		@head.drag(@move, @drag, @drop)
 		@head.hover(@hoverIn, @hoverOut)
-		@text = @paper.text(0, 0, @name)
+		@text = 
 		@head.dblclick(@edit)
-		@text.dblclick(@edit)
 		@head.mousedown(@select)
-		@text.mousedown(@select)
+		@text = []
 		@line = @paper.path("")
 		@line.attr
 			"stroke-dasharray":	"-"
@@ -37,15 +36,24 @@ class @LSC.Instance
 
 		@head.update
 			x: 			x - cfg.instance.head.width / 2
-			y: 			y 
+			y: 			y
 			width: 		cfg.instance.head.width
 			height: 	cfg.instance.head.height
-			r: 5
-		@text.update
-			text: @name
-			x: x
-			y: y + cfg.instance.head.height / 2
-			"line-height": "16px"
+		#
+		# Render the text lines
+		#
+		lines = @name.match(/^.*([\n\r]+|$)/gm);
+		# Calculate the height per line
+		lineHeight = 10
+		textAreaHeight = lineHeight * lines.length
+		yOffset = y + 10
+		for i in [0..lines.length-1]
+			curY = yOffset + i * lineHeight
+			curText = @paper.text(x, curY, lines[i])
+			curText.dblclick(@edit)
+			curText.mousedown(@select)
+			@text.push(curText)
+			
 		lh = height - cfg.instance.foot.height - cfg.instance.head.height
 		@line.update
 			path: "M #{x},#{y + cfg.instance.head.height} v #{lh}"
@@ -71,9 +79,13 @@ class @LSC.Instance
 			@editor.addClass("editor centered")
 			@editor.appendTo("#workspace")
 
-			@text.attr
-				text: ""
-				opacity: 0
+			#Clear all previous texts
+			for text in @text
+				do (text) ->
+					text.attr
+						text: ""
+						opacity: 0
+					text.remove()
 			@editor.mousedown (e) -> e.stopPropagation()
 			@editor.val(@name).focus().select().blur(@unedit)
 			#Old code to exit editor if return pressed
@@ -84,7 +96,7 @@ class @LSC.Instance
 			
 			return if !cfg.regex.namepattern.test(@editor.val())
 			
-			# Sanity cleanup with regex
+			#Trim the text
 			val = @editor.val().trim()
 			#val = val.replace(/\n/g, " xnl ")
 			
@@ -96,9 +108,7 @@ class @LSC.Instance
 				@editor.css("background","yellow").focus()
 				return
 			@name = val
-			@text.attr
-				text: @name
-				opacity: 1
+			
 			@editor.remove()
 			@editor = null
 			@lsc.change()
